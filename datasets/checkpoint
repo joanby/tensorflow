@@ -1,0 +1,2 @@
+model_checkpoint_path: "doc2vec_movie_embeddings.ckpt"
+all_model_checkpoint_paths: "doc2vec_movie_embeddings.ckpt"
