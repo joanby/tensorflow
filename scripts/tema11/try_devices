@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Feb 26 12:44:23 2019
+
+@author: juangabriel
+"""
+
+import tensorflow as tf
+
+
+config = tf.ConfigProto(log_device_placement = True)
+config.allow_soft_placement = True
+
+config.gpu_options.allow_growth = True
+config.gpu_options.per_process_gpu_memory_fraction = 0.4
+
+if tf.test.is_built_with_cuda():
+    print("Tenemos la versión GPU instalada")
+else:
+    print("No hay versión de GPU")
+
+session = tf.Session(config=config)
+A = tf.constant([1.0,2.0,3.0,4.0,5.0,6.0], shape = [2,3], name = "A")
+B = tf.constant([1.0,2.0,3.0,4.0,5.0,6.0], shape = [3,2], name = "B")
+C = tf.matmul(A,B)
+print(session.run(C))
+
+with tf.device("/cpu:0"):
+    a = tf.constant([1.0,2.0,3.0], shape = [1,3])
+    b = tf.constant([2.0,4.0,6.0], shape = [3,1])
+    
+    with tf.device("/gpu:0"):
+        c = tf.matmul(a,b)
+        c = tf.reshape(c,[-1])
+        
+    with tf.device("/gpu:1"):
+        d = tf.matmul(b,a)
+        flat_d = tf.reshape(d,[-1])
+    
+    combined = tf.multiply(c, flat_d)
+    
+print(combined)
